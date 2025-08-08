@@ -1,53 +1,64 @@
 const notes = document.querySelectorAll('.note');
-const add_btn = document.querySelector('.add-btn');
-// const exit_btn = document.querySelector('.exit-btn');
-const save_btn = document.querySelector('.save-btn');
+const addBtn = document.querySelector('.add-btn');
+// const exitBtn = document.querySelector('.exit-btn');
+const saveBtn = document.querySelector('.save-btn');
 
-const saved = new Map();
+let saved = {};
+const saveFile = localStorage.getItem('savedData')
 
-function onCardClick() {
+function loadSaveFile() {
+    if (saveFile) {
+        saved = JSON.parse(saveFile);
+        const titleDraft = document.querySelector('.note .title');
+        const bodyDraft = document.querySelector('.note .body');
+        titleDraft.value = saved.title;
+        bodyDraft.value = saved.body;
+    }
+}
+loadSaveFile();
+
+function detectClicks() {
     notes.forEach(note => {
-        note.addEventListener('click', () => {
-            note.classList.add('active');
-            // exit_btn.classList.add('active');
-            save_btn.classList.add('active');
-            add_btn.classList.add('hidden');
+        note.addEventListener('click', () => openNote(note));
+    });
+    saveBtn.addEventListener('click', () => {
+        saveToLocalStorage();
+        closeNote();
+    });
+}
+detectClicks();
 
-            const textareas = note.querySelectorAll('textarea');
-            textareas.forEach(area => {
-                area.classList.add('active');
-            })
-        });
-    })
-    save_btn.addEventListener('click', () => {
-        // save stuff
+function openNote(clicked) {
+    clicked.classList.add('active');
+    // exitBtn.classList.add('active');
+    saveBtn.classList.add('active');
+    addBtn.classList.add('hidden');
 
-        // get elements na may laman ng title at body sa note na active
-        const title_draft = document.querySelector('.note.active .title');
-        const body_draft = document.querySelector('.note.active .body');
-
-        // kunin yung innerHTML ng nasa taas
-        const current_title = title_draft.value;
-        const current_body = body_draft.value;
-
-        // ilagay sa dictionary (map?) called saved?
-        saved.set('title', current_title);
-        saved.set('body',  current_body);
-
-        // Check if nasa saved?
-        console.log(saved.get('title'));
-        console.log(saved.get('body'));
-
-        const active_note = document.querySelector('.note.active');
-        active_note.classList.remove('active');
-        // exit_btn.classList.remove('active');
-        save_btn.classList.remove('active');
-        add_btn.classList.remove('hidden');
-
-        const active_areas = document.querySelectorAll('textarea.active');
-        active_areas.forEach(area => {
-            area.classList.remove('active');
-        })
+    const textareas = clicked.querySelectorAll('textarea');
+    textareas.forEach(area => {
+        area.classList.add('active');
     })
 }
-onCardClick();
+
+function saveToLocalStorage() {
+    const titleDraft = document.querySelector('.note.active .title');
+    const bodyDraft = document.querySelector('.note.active .body');
+    const currentTitle = titleDraft.value;
+    const currentBody = bodyDraft.value;
+    saved.title = currentTitle;
+    saved.body = currentBody;
+    localStorage.setItem('savedData', JSON.stringify(saved));
+}
+
+function closeNote() {
+    const activeNote = document.querySelector('.note.active');
+    activeNote.classList.remove('active');
+    // exitBtn.classList.remove('active');
+    saveBtn.classList.remove('active');
+    addBtn.classList.remove('hidden');
+
+    const activeAreas = document.querySelectorAll('textarea.active');
+    activeAreas.forEach(area => {
+        area.classList.remove('active');
+    })
+}
