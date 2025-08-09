@@ -59,12 +59,9 @@ main {
     overflow-y: scroll;
     justify-content: flex-start;
     padding-top: 1.5rem;
+    scrollbar-width: auto;
+    scrollbar-color: var(--accent) transparent;
 }
-.note::-webkit-scrollbar {
-    display: none;
-}
-
-
 
 textarea {
     background-color: transparent;
@@ -73,7 +70,6 @@ textarea {
     outline: none;
     resize: none;
     overflow: hidden;
-    text-overflow: ellipsis;
     field-sizing: fixed;
     min-height: 2rem;
     max-height: 2rem;
